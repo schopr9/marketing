@@ -1,13 +1,6 @@
-import { Model } from "sequelize";
 import actionhero from "./ActionHero";
+import { UserModel, ProfilePayloadHubspot } from "./marketingInterface";
 
-interface ProfilePayloadHubspot {
-  properties: ProfilePayloadHubspotItem[];
-}
-interface ProfilePayloadHubspotItem {
-  property: string;
-  value: string | number;
-}
 type ProfilePayloads = ProfilePayloadHubspot;
 
 interface MarketingProviderDto {
@@ -21,22 +14,6 @@ interface HubspotConfig {
   clientSecret: string;
   tokenCode?: string;
   refreshToken?: string;
-}
-
-interface UserModel extends Model {
-  id: string;
-  appConfigId: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phoneNumber: string;
-  preferredLanguage: string;
-  registeredAt: Date;
-  intercomId: string;
-  hubspotId: string;
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt: Date;
 }
 
 interface MarketingService {
@@ -63,10 +40,6 @@ interface QueueParameters {
 
 abstract class MarketingService {
   abstract sendProfileToQueue(user: UserModel): Promise<void>;
-  abstract sendProfileToProvider(
-    user: UserModel,
-    body: ProfilePayloads
-  ): Promise<void>;
 
   async sendToQueue(
     user: UserModel,

@@ -47,8 +47,8 @@ const attributes: ModelAttributes = {
   },
 };
 
-export function init(db): MarketingMemberContext {
-  const MarketingProviderContext = db.sequelize.define(
+export function init(sequelize) {
+  const MarketingProviderContext = sequelize.define(
     "MarketingProviderContext",
     attributes,
     {
@@ -57,7 +57,27 @@ export function init(db): MarketingMemberContext {
   ) as MarketingProviderContextInstance & {
     associate;
     createProvider;
+    getById;
   };
 
-  return MarketingProviderContext;
+  // class method
+  MarketingProviderContext.getById = async (
+    id: string,
+    paranoid: boolean = true
+  ): Promise<MarketingMemberContext> => {
+    try {
+      return await MarketingProviderContext.findByPk(id, { paranoid });
+    } catch (err) {
+      throw new Error(err);
+    }
+  };
+
+  //instance method
+  MarketingProviderContext.prototype.name = function (): string {
+    return this.firstName + this.lastName;
+  };
+
+  return MarketingProviderContext as MarketingProviderContextInstance & {
+    getById;
+  };
 }
